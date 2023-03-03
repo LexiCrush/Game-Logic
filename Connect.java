@@ -5,12 +5,14 @@ import java.sql.SQLException;
 public class Connect {  
     /** 
     * Connect to a sample database 
+     * @throws ClassNotFoundException
     */  
-   public static void connect() {  
+   public static void connect() throws ClassNotFoundException {  
        Connection conn = null;  
        try {  
+           Class.forName("org.sqlite.JDBC");
            // db parameters  
-           String url = "/Users/nishatahmed/Documents/GitHub/Game-Logic/NounBankSQlite.db";  
+           String url = "jdbc:sqlite:/Users/nishatahmed/Documents/GitHub/Game-Logic/NounBankSQlite.db";  
            // create a connection to the database  
            conn = DriverManager.getConnection(url);  
              
@@ -30,8 +32,14 @@ public class Connect {
    }  
    /** 
     * @param args the command line arguments 
+ * @throws ClassNotFoundException
     */  
-   public static void main(String[] args) {  
+   public static void main(String[] args) throws ClassNotFoundException {  
        connect();  
    }  
 }  
+// connect sqlite database to java
+// https://stackoverflow.com/questions/18397940/connect-sqlite-database-to-java
+// https://www.sqlitetutorial.net/sqlite-java/connect/
+// https://www.sqlitetutorial.net/sqlite-java/sqlite-jdbc-driver/
+// https://www.sqlitetutorial.net/sqlite-java/sqlite-jdbc-driver/
