@@ -38,8 +38,3 @@ public class Connect {
        connect();  
    }  
 }  
-// connect sqlite database to java
-// https://stackoverflow.com/questions/18397940/connect-sqlite-database-to-java
-// https://www.sqlitetutorial.net/sqlite-java/connect/
-// https://www.sqlitetutorial.net/sqlite-java/sqlite-jdbc-driver/
-// https://www.sqlitetutorial.net/sqlite-java/sqlite-jdbc-driver/
