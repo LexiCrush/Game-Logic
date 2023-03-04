@@ -1,18 +1,17 @@
-import java.sql.Connection;  
-import java.sql.DriverManager;  
-import java.sql.SQLException;  
+package Connect.db;
+import java.sql.*;
 
 public class Connect {  
     /** 
     * Connect to a sample database 
      * @throws ClassNotFoundException
     */  
-   public static void connect() throws ClassNotFoundException {  
+   public static void connect(String db_path) throws ClassNotFoundException {  
        Connection conn = null;  
        try {  
            Class.forName("org.sqlite.JDBC");
            // db parameters  
-           String url = "jdbc:sqlite:/Users/nishatahmed/Documents/GitHub/Game-Logic/NounBankSQlite.db";  
+           String url = "jdbc:sqlite:" + db_path;  
            // create a connection to the database  
            conn = DriverManager.getConnection(url);  
              
@@ -35,6 +34,6 @@ public class Connect {
  * @throws ClassNotFoundException
     */  
    public static void main(String[] args) throws ClassNotFoundException {  
-       connect();  
+       connect("/Users/nishatahmed/Documents/GitHub/Game-Logic/NounBankSQlite.db");  
    }  
 }  
