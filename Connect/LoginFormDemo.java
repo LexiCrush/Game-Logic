@@ -12,7 +12,8 @@ import java.sql.*;
 class CreateLoginForm extends JFrame implements ActionListener  
 {  
     //initialize button, panel, label, and text field  
-    JButton b1;  
+    JButton b1; 
+    JButton b2; 
     JPanel newPanel;  
     JLabel userLabel, passLabel;  
     final JTextField  textField1, textField2;  
@@ -38,7 +39,8 @@ class CreateLoginForm extends JFrame implements ActionListener
         textField2 = new JPasswordField(15);    //set length for the password  
           
         //create submit button  
-        b1 = new JButton("SUBMIT"); //set label to button  
+        b1 = new JButton("LOGIN"); //set label to button  
+        b2 = new JButton("REGISTER"); //set label to button  
           
         //create panel to put form elements  
         newPanel = new JPanel(new GridLayout(3, 1));  
@@ -47,12 +49,14 @@ class CreateLoginForm extends JFrame implements ActionListener
         newPanel.add(passLabel);    //set password label to panel  
         newPanel.add(textField2);   //set text field to panel  
         newPanel.add(b1);           //set button to panel  
+        newPanel.add(b2);           //set button to panel
           
         //set border to panel   
         add(newPanel, BorderLayout.CENTER);  
           
         //perform action on button click   
         b1.addActionListener(this);     //add action listener to button  
+        b2.addActionListener(this);     //add action listener to button
         setTitle("LOGIN FORM");         //set title to the login form  
     }  
       
@@ -65,7 +69,39 @@ class CreateLoginForm extends JFrame implements ActionListener
         try (Connection conn = Connect.connect(path)) {
             try (conn) {
                 //call connect and insert methods from Connect.java to connect to database
-                Connect.insert(userValue, passValue);
+                String sql = "SELECT * FROM users WHERE username = ? AND user_password = ?";
+                if (ae.getSource() == b1) {
+                    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                        pstmt.setString(1, userValue);
+                        pstmt.setString(2, passValue);
+                        ResultSet rs = pstmt.executeQuery();
+                        if (rs.next()) {
+                            // username and password match, do something
+                            JOptionPane.showMessageDialog(this, "Username and password match!");
+                            //System.out.println("Username and password match!");
+                        } else {
+                            // username and password don't match, create new user
+                            JOptionPane.showMessageDialog(this, "Username and password do not match.");
+                            System.out.println("Username and password do not match.");
+                        }
+                    }
+                } else if (ae.getSource() == b2) {
+                    try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
+                        pstmt.setString(1, userValue);
+                        pstmt.setString(2, passValue);
+                        //ResultSet rs = pstmt.executeQuery();
+                        String ret = Connect.insert(userValue, passValue);
+                        if (ret == "true") {
+                            // new user
+                            JOptionPane.showMessageDialog(this, "New user created!");
+                        } else if (ret == "false"){
+                            JOptionPane.showMessageDialog(this, "Username or password cannot be empty.");
+                        } else {
+                            // new user not created
+                            JOptionPane.showMessageDialog(this, "New user not created. " + ret);
+                        }
+                    }
+                }
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
