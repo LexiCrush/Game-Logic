@@ -4,6 +4,9 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Random;
+import java.util.ArrayList;
+
 
 public class QuestionGenerator {
     public static Connection connect() {
@@ -18,10 +21,60 @@ public class QuestionGenerator {
         }
         return conn;
     }
+    private String[] questionFilters = {"Begins With The Letter", "Ends With The Letter", "Any"};
+    private String chosenFilter;
+    private static String chosenTable;
+    private ArrayList<String> firstLetters;
+    private ArrayList<String> lastLetters;
+
+    public void getQuestion() {
+        Random rand = new Random();
+        chosenFilter = questionFilters[rand.nextInt(questionFilters.length)];
+        System.out.println("Chosen Filter: " + chosenFilter);
+        // make a list of all the first letters of the nouns in the chosen table
+        if (chosenFilter.equals("Any")) {
+            // do nothing for now
+        }
+        if (chosenFilter.equals("Begins With The Letter")) {
+            try {
+                Statement stmt = connect().createStatement();
+                ResultSet rs = stmt.executeQuery("SELECT SUBSTR(" + chosenTable + ", 1, 1) FROM " + chosenTable);
+                firstLetters = new ArrayList<String>();
+                while (rs.next()) {
+                    String letter = rs.getString(1);
+                    firstLetters.add(letter);
+                }
+                connect().close();
+                // choose a random letter from the list of first letters
+                int randomIndex = rand.nextInt(firstLetters.size());
+                String randomLetter = firstLetters.get(randomIndex);
+                System.out.println(randomLetter);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        if (chosenFilter.equals("Ends With The Letter")) {
+            try {
+                Statement stmt = connect().createStatement();
+                ResultSet rs = stmt.executeQuery("SELECT SUBSTR(" + chosenTable + ", -1, 1) FROM " + chosenTable);
+                lastLetters = new ArrayList<String>();
+                while (rs.next()) {
+                    String letter = rs.getString(1);
+                    lastLetters.add(letter);
+                }
+                connect().close();
+                // choose a random letter from the list of first letters
+                int randomIndex = rand.nextInt(lastLetters.size());
+                String randomLetter = lastLetters.get(randomIndex);
+                System.out.println(randomLetter);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
     public static void main(String[] args) { 
         Connection conn = connect(); // connect to the database
         // select all available tables in NounBankSQlite.db
-        String[] question_filters = {"Begins With The Letter", "Ends With The Letter", "Any"};
         String sql = "SELECT name FROM sqlite_master WHERE type='table'"; 
         try {
             Statement stmt = conn.createStatement();
@@ -92,6 +145,9 @@ public class QuestionGenerator {
                 System.out.println("Noun not set for table " + table);
             }
             System.out.println("Noun: " + NOUN); // print the chosen noun and its attribute
+            chosenTable = tables[random];
+            QuestionGenerator game = new QuestionGenerator();
+            game.getQuestion();
 
         } catch (SQLException e) {
             System.out.println(e.getMessage());
