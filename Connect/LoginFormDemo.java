@@ -1,4 +1,4 @@
-package Connect.db;
+package Connect;
 //import required classes and packages  
 import javax.swing.*;
 import java.awt.*;  
