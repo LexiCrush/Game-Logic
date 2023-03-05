@@ -22,24 +22,35 @@ public class Connect {
         } 
         return conn;  
     }  
-    public static void insert(String userValue, String passValue) throws ClassNotFoundException{
+    public static String insert(String userValue, String passValue) throws ClassNotFoundException{
         String sql = "INSERT INTO users(username, user_password) VALUES(?,?)";
         String path = "db/UserProfile.db";
         Connection conn = connect(path);
+        String success;
+        String msg;
+        if(userValue.equals("") || passValue.equals("")){
+            success = "false";
+            return success;
+        }
         try (conn;
             PreparedStatement pstmt = conn.prepareStatement(sql)) {
             pstmt.setString(1, userValue);
             pstmt.setString(2, passValue);
             pstmt.executeUpdate();
+            success = "true";
+            return success;
         } catch (SQLException e) {
-            System.out.println(e.getMessage());
+            //System.out.println(e.getMessage());
+            msg = e.getMessage();
         } try {  
             if (conn != null) {  
                 conn.close();  
             }  
         } catch (SQLException ex) {  
-            System.out.println(ex.getMessage());  
-        }  
+            //System.out.println(ex.getMessage());  
+            msg = ex.getMessage();
+        }
+        return msg;  
     }
     /** 
      * @param args the command line arguments 
