@@ -33,6 +33,6 @@ public class Connect {
      * @throws ClassNotFoundException
      */  
     public static void main(String[] args) throws ClassNotFoundException {  
-        connect("NounBankSQlite.db");  
+        connect("db/NounBankSQlite.db");  
     }  
 }  
