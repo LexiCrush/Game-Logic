@@ -1,11 +1,10 @@
-package Connect;
-//import required classes and packages  
+//https://www.javatpoint.com/login-form-java
+package Connect; 
 import javax.swing.*;
 import java.awt.*;  
 import java.awt.event.*;  
 import java.lang.Exception;
-
-
+import java.sql.*;
 
 //create CreateLoginForm class to create login form  
 //class extends JFrame to create a window where our component add  
@@ -62,24 +61,17 @@ class CreateLoginForm extends JFrame implements ActionListener
     {  
         String userValue = textField1.getText();        //get user entered username from the textField1  
         String passValue = textField2.getText();        //get user entered pasword from the textField2  
-          
-        //check whether the credentials are authentic or not  
-        if (!(userValue.isEmpty()) && !(passValue.isEmpty())) {  //if authentic, navigate user to a new page  
-              
-            //create instance of the NewPage  
-            NewPage page = new NewPage();  
-              
-            //make page visible to the user  
-            page.setVisible(true);  
-              
-            //create a welcome label and set it to the new page  
-            JLabel wel_label = new JLabel("Welcome: "+userValue);  
-            page.getContentPane().add(wel_label);  
-        }  
-        else{  
-            //show error message  
-            System.out.println("Please enter valid username and password");  
-        }  
+        String path = "db/UserProfile.db";
+        try (Connection conn = Connect.connect(path)) {
+            try (conn) {
+                //call connect and insert methods from Connect.java to connect to database
+                Connect.insert(userValue, passValue);
+            } catch (ClassNotFoundException e) {
+                e.printStackTrace();
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        }
     }  
 }  
 //create the main class  
@@ -88,9 +80,6 @@ class LoginFormDemo
     //main() method start  
     public static void main(String arg[]) throws ClassNotFoundException  
     {  
-        //call connect method from Connect.java to connect to database
-        String path = "/Users/nishatahmed/Documents/GitHub/Game-Logic/UserProfile.db";
-        Connect.connect(path);
         try  
         {  
             //create instance of the CreateLoginForm  

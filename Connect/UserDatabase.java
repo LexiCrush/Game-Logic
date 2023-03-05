@@ -16,8 +16,8 @@ public class UserDatabase {
                 System.out.println("The driver name is " + meta.getDriverName());
                 System.out.println("A new database has been created.");
                 try (Statement stmt = conn.createStatement()) {
-                    stmt.execute("DROP TABLE IF EXISTS User;");
-                    stmt.execute("CREATE TABLE User (user_id bigint primary key, username varchar(255) not null unique, user_password varchar(255) not null);");
+                    stmt.execute("DROP TABLE IF EXISTS users;");
+                    stmt.execute("CREATE TABLE users (uid integer not null primary key, username varchar(50) not null unique, user_password varchar(255) not null);");
                     System.out.println("Successfully created table");
                 } catch (SQLException e) {
                     System.out.println("Couldn't create table " + e.getMessage());
