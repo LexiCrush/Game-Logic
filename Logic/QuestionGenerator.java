@@ -65,9 +65,11 @@ public class QuestionGenerator {
 
     public void getReadableNounFromTableName() {
         String table = chosenTable; // sets table to the randomly chosen table
-        String NOUN = ""; // sets NOUN attribute to specific string based off of the randomly chosen table
+        String NOUN = "A Noun"; // sets NOUN attribute to specific string based off of the randomly chosen table
             if (table.equals("all_usa_states")) {
                 NOUN = "A State in the USA";
+            } else if (table.equals("many_english_words")) {
+                NOUN = "A Word in the English Language";
             } else if (table.equals("all_world_countries")) {
                 NOUN = "A Country in the World";
             } else if (table.equals("all_elements")) {
