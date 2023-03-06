@@ -12,16 +12,17 @@ import java.util.ArrayList;
 
 public class QuestionGenerator {
 
-    // private String[] questionFilters = {"Begins With The Letter", "Ends With The Letter", "Any"};
+    private String[] questionFilters = {"Begins With The Letter", "Ends With The Letter", "Any"};
 
     public Connection conn = connect();
     public String chosenTable;
     public String chosenNoun;
     public String chosenFilter;
+    public static String assembledPrompt;
 
     private ArrayList<String> firstLetters;
     private ArrayList<String> lastLetters;
-    private String randomLetter;
+    public String randomLetter;
 
     public static Connection connect() {
         Connection conn = null;
@@ -121,8 +122,8 @@ public class QuestionGenerator {
     public void getFilter() {
         
         Random rand = new Random();
-        // chosenFilter = questionFilters[rand.nextInt(questionFilters.length)];
-        chosenFilter = "Any";
+        chosenFilter = questionFilters[rand.nextInt(questionFilters.length)];
+       // chosenFilter = "Any";
 
         // System.out.println("Chosen Filter: " + chosenFilter);
         // make a list of all the first letters of the nouns in the chosen table
@@ -143,7 +144,7 @@ public class QuestionGenerator {
                 // choose a random letter from the list of first letters
                 int randomIndex = rand.nextInt(firstLetters.size());
                 randomLetter = firstLetters.get(randomIndex);
-                System.out.println(randomLetter);
+                // System.out.println(randomLetter);
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
@@ -161,7 +162,7 @@ public class QuestionGenerator {
                 // choose a random letter from the list of first letters
                 int randomIndex = rand.nextInt(lastLetters.size());
                 randomLetter = lastLetters.get(randomIndex);
-                System.out.println(randomLetter);
+                // System.out.println(randomLetter);
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
@@ -185,7 +186,41 @@ public class QuestionGenerator {
                 System.out.println(e.getMessage());
             }
         }
-
+        if (chosenFilter.equals("Begins With The Letter")) {
+            if (Character.toString(potentialAnswer.charAt(0)).equals(Character.toString(this.randomLetter.charAt(0)))) {    
+                try {
+                    Statement stmt = conn.createStatement(); 
+                    ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "')");
+                    if (rs.next()) { // checks each row
+                        System.out.println("Correct!");
+                    } else {
+                        System.out.println("Incorrect. The answer was not found in the database.");
+                    }
+                    // connect().close();
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+            } else {
+                System.out.println("That does not begin with the letter " + randomLetter);
+            }
+        }
+        if (chosenFilter.equals("Ends With The Letter")) {
+            if (potentialAnswer.charAt(potentialAnswer.length() - 1) == this.randomLetter.charAt(this.randomLetter.length() - 1)) {                try {
+                    Statement stmt = conn.createStatement(); 
+                    ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "')");
+                    if (rs.next()) { // checks each row
+                        System.out.println("Correct!");
+                    } else {
+                        System.out.println("Incorrect. The answer was not found in the database.");
+                    }
+                   // connect().close();
+                } catch (SQLException e) {
+                    System.out.println(e.getMessage());
+                }
+            } else {
+                System.out.println("That does not end with the letter " + randomLetter);
+            }
+        }
     }
 
 
@@ -201,10 +236,18 @@ public class QuestionGenerator {
 
             game.getFilter();
 
-            // System.out.println("NAME " + game.chosenNoun);
+            if (game.chosenFilter == ("Any")) {
+                assembledPrompt = "Name " + game.chosenNoun + ": ";
+            } 
+            if (game.chosenFilter == ("Begins With The Letter")) {
+                assembledPrompt = "Name " + game.chosenNoun + " that starts with " + game.randomLetter + ": ";
+            } 
+            if (game.chosenFilter == ("Ends With The Letter")) {
+                assembledPrompt = "Name " + game.chosenNoun + " that ends with " + game.randomLetter + ": ";
+            } 
 
             try (Scanner scanner = new Scanner(System.in)) {
-                System.out.print("NAME " + game.chosenNoun + ": ");
+                System.out.print(assembledPrompt);
                 String potentialAnswer = scanner.nextLine(); // stores answer from CL
                 
                 game.checkAnswer(potentialAnswer);
