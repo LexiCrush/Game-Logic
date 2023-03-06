@@ -59,7 +59,44 @@ class CreateLoginForm extends JFrame implements ActionListener
         b2.addActionListener(this);     //add action listener to button
         setTitle("LOGIN FORM");         //set title to the login form  
     }  
-      
+    public static boolean checkUsername(String username) {
+        Connection conn = null;
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        boolean exists = false;
+        
+        try {
+            Class.forName("org.sqlite.JDBC");
+            conn = DriverManager.getConnection("jdbc:sqlite:db/UserProfile.db"); // Replace /path/to/example.db with the path to your SQLite database file
+            stmt = conn.prepareStatement("SELECT username FROM users WHERE username = ?");
+            stmt.setString(1, username);
+            rs = stmt.executeQuery();
+            
+            if (rs.next()) {
+                exists = true;
+            }
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (rs != null) {
+                    rs.close();
+                }
+                
+                if (stmt != null) {
+                    stmt.close();
+                }
+                
+                if (conn != null) {
+                    conn.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        
+        return exists;
+    }
     //define abstract method actionPerformed() which will be called on button click   
     public void actionPerformed(ActionEvent ae)     //pass action listener as a parameter  
     {  
@@ -77,6 +114,9 @@ class CreateLoginForm extends JFrame implements ActionListener
                         if (rs.next()) {
                             // username and password match, do something
                             JOptionPane.showMessageDialog(this, "Username and password match!");
+                        } else if (!checkUsername(userValue)) {
+                            // username already exists
+                            JOptionPane.showMessageDialog(this, "Username doesn't exist. Please try again or register.");
                         } else if (userValue.equals("") || passValue.equals("")){
                             JOptionPane.showMessageDialog(this, "Username or password cannot be empty.");
                         } else {
@@ -93,6 +133,9 @@ class CreateLoginForm extends JFrame implements ActionListener
                         if (ret == "true") {
                             // new user
                             JOptionPane.showMessageDialog(this, "New user created!");
+                        } else if (!checkUsername(userValue)) {
+                            // username already exists
+                            JOptionPane.showMessageDialog(this, "Username already exists. Please try again.");
                         } else if (ret == "false"){
                             JOptionPane.showMessageDialog(this, "Username or password cannot be empty.");
                         } else {
