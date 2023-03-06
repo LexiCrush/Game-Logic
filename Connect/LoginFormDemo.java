@@ -68,8 +68,9 @@ class CreateLoginForm extends JFrame implements ActionListener
         String path = "db/UserProfile.db";
         try (Connection conn = Connect.connect(path)) {
             try (conn) {
+                //call connect and insert methods from Connect.java to connect to database
                 String sql = "SELECT * FROM users WHERE username = ? AND user_password = ?";
-                if (ae.getSource() == b1) {//if login clicked
+                if (ae.getSource() == b1) {
                     try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                         pstmt.setString(1, userValue);
                         pstmt.setString(2, passValue);
@@ -77,14 +78,14 @@ class CreateLoginForm extends JFrame implements ActionListener
                         if (rs.next()) {
                             // username and password match, do something
                             JOptionPane.showMessageDialog(this, "Username and password match!");
-                        } else if (userValue.equals("") || passValue.equals("")){
-                            JOptionPane.showMessageDialog(this, "Username or password cannot be empty.");
+                            //System.out.println("Username and password match!");
                         } else {
                             // username and password don't match, create new user
                             JOptionPane.showMessageDialog(this, "Username and password do not match.");
+                            System.out.println("Username and password do not match.");
                         }
                     }
-                } else if (ae.getSource() == b2) {//if register clicked
+                } else if (ae.getSource() == b2) {
                     try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
                         pstmt.setString(1, userValue);
                         pstmt.setString(2, passValue);
@@ -127,6 +128,5 @@ class LoginFormDemo
             //handle exception   
             JOptionPane.showMessageDialog(null, e.getMessage());  
         }  
-    }
-
+    }  
 }  
