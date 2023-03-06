@@ -5,11 +5,24 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
-import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.ArrayList;
+// import java.util.Scanner;
 
 
 public class QuestionGenerator {
+
+    // private String[] questionFilters = {"Begins With The Letter", "Ends With The Letter", "Any"};
+
+    public Connection conn = connect();
+    public String chosenTable;
+    public String chosenNoun;
+    public String chosenFilter;
+
+    private ArrayList<String> firstLetters;
+    private ArrayList<String> lastLetters;
+    private String randomLetter;
+
     public static Connection connect() {
         Connection conn = null;
         try {
@@ -22,84 +35,9 @@ public class QuestionGenerator {
         }
         return conn;
     }
-    private String[] questionFilters = {"Begins With The Letter", "Ends With The Letter", "Any"};
-    private String chosenFilter;
-    private static String chosenTable;
-    private ArrayList<String> firstLetters;
-    private ArrayList<String> lastLetters;
-    private String randomLetter;
 
-    public void getQuestion() {
-        Random rand = new Random();
-
-        // chosenFilter = questionFilters[rand.nextInt(questionFilters.length)];
-        chosenFilter = "Any";
-
-        System.out.println("Chosen Filter: " + chosenFilter);
-        // make a list of all the first letters of the nouns in the chosen table
-        if (chosenFilter.equals("Any")) {
-            // pass
-        }
-
-        if (chosenFilter.equals("Begins With The Letter")) {
-            try {
-                Statement stmt = connect().createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT SUBSTR(" + chosenTable + ", 1, 1) FROM " + chosenTable);
-                firstLetters = new ArrayList<String>();
-                while (rs.next()) {
-                    String letter = rs.getString(1);
-                    firstLetters.add(letter);
-                }
-                connect().close();
-                // choose a random letter from the list of first letters
-                int randomIndex = rand.nextInt(firstLetters.size());
-                randomLetter = firstLetters.get(randomIndex);
-                System.out.println(randomLetter);
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-        if (chosenFilter.equals("Ends With The Letter")) {
-            try {
-                Statement stmt = connect().createStatement();
-                ResultSet rs = stmt.executeQuery("SELECT SUBSTR(" + chosenTable + ", -1, 1) FROM " + chosenTable);
-                lastLetters = new ArrayList<String>();
-                while (rs.next()) {
-                    String letter = rs.getString(1);
-                    lastLetters.add(letter);
-                }
-                connect().close();
-                // choose a random letter from the list of first letters
-                int randomIndex = rand.nextInt(lastLetters.size());
-                randomLetter = lastLetters.get(randomIndex);
-                System.out.println(randomLetter);
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-    }
-    public void checkAnswer(String potentialAnswer) {
-        if (chosenFilter.equals("Any")) {
-            try {
-                Statement stmt = connect().createStatement(); 
-                ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "')");
-                if (rs.next()) { // checks each row
-                    System.out.println("Correct!");
-                } else {
-                    System.out.println("Incorrect. The answer was not found in the database.");
-                }
-                connect().close();
-            } catch (SQLException e) {
-                System.out.println(e.getMessage());
-            }
-        }
-
-    }
-    
-    public static void main(String[] args) { 
-        Connection conn = connect(); // connect to the database
-        // select all available tables in NounBankSQlite.db
-        String sql = "SELECT name FROM sqlite_master WHERE type='table'"; 
+    public void getRandomNbTable() {
+        String sql = "SELECT name FROM sqlite_master WHERE type='table'"; // select all available tables in NounBankSQlite.db
         try {
             Statement stmt = conn.createStatement();
             ResultSet rs = stmt.executeQuery(sql);
@@ -109,14 +47,24 @@ public class QuestionGenerator {
                 tables[i] = rs.getString("name");
                 i++;
             }
-            for (int j = 0; j < i; j++) { // print the table names
-                System.out.println(tables[j]);
-            }
+            
+            // for (int j = 0; j < i; j++) { // print the table names
+            //     System.out.println(tables[j]);
+            // }
+            
             int random = (int) (Math.random() * i); // choose a random table from the array
-            String table = tables[random];
-            System.out.println("Randomly Chosen Table: " + table); // print the randomly chosen table name
+            chosenTable = tables[random];
+            // System.out.println("Randomly Chosen Table: " + chosenTable); // print the randomly chosen table name
+            // conn.close();
+            
+        } catch (SQLException e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
-            String NOUN = ""; // sets NOUN attribute to specific string based off of the randomly chosen table
+    public void getReadableNounFromTableName() {
+        String table = chosenTable; // sets table to the randomly chosen table
+        String NOUN = ""; // sets NOUN attribute to specific string based off of the randomly chosen table
             if (table.equals("all_usa_states")) {
                 NOUN = "A State in the USA";
             } else if (table.equals("all_world_countries")) {
@@ -165,42 +113,129 @@ public class QuestionGenerator {
                 NOUN = "An Empire";
             } else if (table.equals("many_youtubers")) {
                 NOUN = "A Youtuber";
-            } else {
-                System.out.println("Noun not set for table " + table);
             }
-            System.out.println("Noun: " + NOUN); // print the chosen noun and its attribute
-            chosenTable = tables[random];
-            QuestionGenerator game = new QuestionGenerator();
-            game.getQuestion();
-            String chosenFilter = game.chosenFilter; 
+            chosenNoun = NOUN;
+            // System.out.println("Noun: " + NOUN); // print the chosen noun and its attribute
+    }
 
-            String randomLetter = game.randomLetter;
+    public void getFilter() {
+        
+        Random rand = new Random();
+        // chosenFilter = questionFilters[rand.nextInt(questionFilters.length)];
+        chosenFilter = "Any";
 
-            if (chosenFilter.equals("Any")) {
-                System.out.println("Name " + NOUN);
-            }
-            if (chosenFilter.equals("Begins With The Letter") || chosenFilter.equals("Ends With The Letter")) {
-                System.out.println("Name " + NOUN + " that " + chosenFilter + " " + randomLetter.toUpperCase() + ".");
-            }
-
-            Scanner scanner = new Scanner(System.in);
-            System.out.print("Enter your answer: ");
-            String potentialAnswer = scanner.nextLine(); // stores answer from CL into potentialAnswer
-
-            System.out.println("Your answer: " + potentialAnswer);
-
-            game.checkAnswer(potentialAnswer);
-                    
-        } catch (SQLException e) {
-            System.out.println(e.getMessage());
+        // System.out.println("Chosen Filter: " + chosenFilter);
+        // make a list of all the first letters of the nouns in the chosen table
+        if (chosenFilter.equals("Any")) {
+            // pass
         }
-        try {
-            if (conn != null) {
+
+        if (chosenFilter.equals("Begins With The Letter")) {
+            try {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery("SELECT SUBSTR(" + chosenTable + ", 1, 1) FROM " + chosenTable);
+                firstLetters = new ArrayList<String>();
+                while (rs.next()) {
+                    String letter = rs.getString(1);
+                    firstLetters.add(letter);
+                }
+                // conn.close();
+                // choose a random letter from the list of first letters
+                int randomIndex = rand.nextInt(firstLetters.size());
+                randomLetter = firstLetters.get(randomIndex);
+                System.out.println(randomLetter);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+        if (chosenFilter.equals("Ends With The Letter")) {
+            try {
+                Statement stmt = conn.createStatement();
+                ResultSet rs = stmt.executeQuery("SELECT SUBSTR(" + chosenTable + ", -1, 1) FROM " + chosenTable);
+                lastLetters = new ArrayList<String>();
+                while (rs.next()) {
+                    String letter = rs.getString(1);
+                    lastLetters.add(letter);
+                }
                 conn.close();
+                // choose a random letter from the list of first letters
+                int randomIndex = rand.nextInt(lastLetters.size());
+                randomLetter = lastLetters.get(randomIndex);
+                System.out.println(randomLetter);
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
             }
-        } catch (SQLException ex) {
-            System.out.println(ex.getMessage());
         }
+    }
+
+    public void checkAnswer(String potentialAnswer) {
+        
+        if (chosenFilter.equals("Any")) {
+            
+            try {
+                Statement stmt = conn.createStatement(); 
+                ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "')");
+                if (rs.next()) { // checks each row
+                    System.out.println("\nCorrect! " + potentialAnswer+ " is " + chosenNoun.toLowerCase() + " in our database.\n");
+                } else {
+                    System.out.println("\nIncorrect. The answer was not found in the database.\n");
+                }
+                // conn.close();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+    }
+
+
+    public static void main(String[] args) {
+            // Connection conn = connect();
+            QuestionGenerator game = new QuestionGenerator();
+            System.out.println("\n...LEXICRUSH...\nLocal Database Trivia Game Demo\n");
+
+            game.getRandomNbTable();
+            // System.out.println(game.chosenTable);
+
+            game.getReadableNounFromTableName();
+
+            game.getFilter();
+
+            // System.out.println("NAME " + game.chosenNoun);
+
+            try (Scanner scanner = new Scanner(System.in)) {
+                System.out.print("NAME " + game.chosenNoun + ": ");
+                String potentialAnswer = scanner.nextLine(); // stores answer from CL
+                
+                game.checkAnswer(potentialAnswer);
+            }
+            
+
+            // getReadableNounFromTableName(conn, chosenTable);
+
+
+            // String NOUN = getReadableNounFromTableName(conn, chosenTable);
+
+            // QuestionGenerator game = new QuestionGenerator();
+            // game.getQuestion(conn);
+            // String chosenFilter = game.chosenFilter; 
+
+            // String randomLetter = game.randomLetter;
+
+            // if (chosenFilter.equals("Any")) {
+            //     System.out.println("Name " + NOUN);
+            // }
+            // if (chosenFilter.equals("Begins With The Letter") || chosenFilter.equals("Ends With The Letter")) {
+            //     System.out.println("Name " + NOUN + " that " + chosenFilter + " " + randomLetter.toUpperCase() + ".");
+            // }
+
+            // Scanner scanner = new Scanner(System.in);
+            // System.out.print("Enter your answer: ");
+            // String potentialAnswer = scanner.nextLine(); // stores answer from CL into potentialAnswer
+
+            // System.out.println("Your answer: " + potentialAnswer);
+
+            // game.checkAnswer(potentialAnswer, conn);
     }
 }
 
