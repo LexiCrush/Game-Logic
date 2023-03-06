@@ -2,12 +2,18 @@ package Logic;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
 import java.util.ArrayList;
+<<<<<<< Updated upstream
 import java.util.Scanner;
 
+=======
+import java.util.List;
+import java.util.Scanner;
+>>>>>>> Stashed changes
 
 public class QuestionGenerator {
     public static Connection connect() {
@@ -75,11 +81,19 @@ public class QuestionGenerator {
             }
         }
     }
+<<<<<<< Updated upstream
     public void checkAnswer(String potentialAnswer) {
         if (chosenFilter.equals("Any")) {
             try {
                 Statement stmt = connect().createStatement(); 
                 ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE " + chosenTable + " LIKE '%' " + potentialAnswer + " '%'"); // searches for when word from chosentable is = to potential answer
+=======
+    /*public void checkAnswer(String potentialAnswer) {
+        if (chosenFilter.equals("Any")) {
+            try {
+                Statement stmt = connect().createStatement(); 
+                ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE " + chosenTable + " = " + potentialAnswer); // searches for when word from chosentable is = to potential answer
+>>>>>>> Stashed changes
                 if (rs.next()) { // checks each row
                     System.out.println("Correct!");
                 } else {
@@ -91,7 +105,47 @@ public class QuestionGenerator {
             }
         }
 
+<<<<<<< Updated upstream
     }
+=======
+    }*/
+    /*public List<String> getColumnNames(String tableName) throws SQLException {
+        List<String> columnNames = new ArrayList<>();
+        try (Connection conn = DriverManager.getConnection("jdbc:sqlite:db/NounBankSQlite.db")) {
+            Statement stmt = conn.createStatement();
+            ResultSet rs = stmt.executeQuery("PRAGMA table_info(" + chosenTable + ")");
+            while (rs.next()) {
+                columnNames.add(rs.getString("name"));
+            }
+        } catch (SQLException e) {
+            // handle exception
+        }
+        return columnNames;
+    }*/
+
+    public void checkAnswer(String potentialAnswer) {
+        if (chosenFilter.equals("Any")) {
+            try {
+                Connection conn = connect();
+                //List<String> columnNames = getColumnNames(chosenTable);
+                //String secondColumnName = columnNames.get(1);
+                //System.out.println("SELECT * FROM " + chosenTable + " WHERE " + secondColumnName + " = " + potentialAnswer);
+                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM " + chosenTable + " WHERE " + chosenTable + " = ?");
+                pstmt.setString(1, potentialAnswer);
+                ResultSet rs = pstmt.executeQuery();
+                if (rs.next()) {
+                    System.out.println("Correct!");
+                } else {
+                    System.out.println("Incorrect. The answer was not found in the database.");
+                }
+                conn.close();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }    
+    
+>>>>>>> Stashed changes
     
     public static void main(String[] args) { 
         Connection conn = connect(); // connect to the database
@@ -182,7 +236,10 @@ public class QuestionGenerator {
             Scanner scanner = new Scanner(System.in);
             System.out.print("Enter your answer: ");
             String potentialAnswer = scanner.nextLine(); // stores answer from CL into potentialAnswer
+<<<<<<< Updated upstream
     
+=======
+>>>>>>> Stashed changes
             game.checkAnswer(potentialAnswer);
                     
         } catch (SQLException e) {
@@ -196,4 +253,8 @@ public class QuestionGenerator {
             System.out.println(ex.getMessage());
         }
     }
+<<<<<<< Updated upstream
 }
+=======
+}
+>>>>>>> Stashed changes
