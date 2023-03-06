@@ -179,9 +179,9 @@ public class QuestionGenerator {
                 Statement stmt = conn.createStatement(); 
                 ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "')");
                 if (rs.next()) { // checks each row
-                    System.out.println("\nCorrect! " + potentialAnswer+ " is " + chosenNoun.toLowerCase() + " in our database.\n");
+                    System.out.println("\nCORRECT! " + potentialAnswer+ " is " + chosenNoun.toLowerCase() + " in our database.\n");
                 } else {
-                    System.out.println("\nIncorrect. The answer was not found in the database.\n");
+                    System.out.println("\nINCORRECT. The answer was not found in the database.\n");
                 }
                 // conn.close();
             } catch (SQLException e) {
@@ -189,31 +189,32 @@ public class QuestionGenerator {
             }
         }
         if (chosenFilter.equals("Begins With The Letter")) {
-            if (Character.toString(potentialAnswer.charAt(0)).equals(Character.toString(this.randomLetter.charAt(0)))) {    
+            if (Character.toString(potentialAnswer.charAt(0)).equalsIgnoreCase(Character.toString(this.randomLetter.charAt(0)))) {  
                 try {
                     Statement stmt = conn.createStatement(); 
                     ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "')");
                     if (rs.next()) { // checks each row
-                        System.out.println("Correct!");
+                        System.out.println("\nCORRECT! " + potentialAnswer+ " is " + chosenNoun.toLowerCase() + " in our database.\n");
                     } else {
-                        System.out.println("Incorrect. The answer was not found in the database.");
+                        System.out.println("\nINCORRECT! The answer was not found in the database.\n");
                     }
                     // connect().close();
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
                 }
             } else {
-                System.out.println("That does not begin with the letter " + randomLetter);
+                System.out.println("\nINCORRECT! That does not begin with the letter " + randomLetter + ".\n");
             }
         }
         if (chosenFilter.equals("Ends With The Letter")) {
-            if (potentialAnswer.charAt(potentialAnswer.length() - 1) == this.randomLetter.charAt(this.randomLetter.length() - 1)) {                try {
+            if (Character.toString(potentialAnswer.charAt(potentialAnswer.length() - 1)).equalsIgnoreCase(Character.toString(this.randomLetter.charAt(this.randomLetter.length() - 1)))) {             
+                try {
                     Statement stmt = conn.createStatement(); 
                     ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "')");
                     if (rs.next()) { // checks each row
-                        System.out.println("Correct!");
+                        System.out.println("\nCORRECT! " + potentialAnswer+ " is " + chosenNoun.toLowerCase() + " in our database.\n");
                     } else {
-                        System.out.println("Incorrect. The answer was not found in the database.");
+                        System.out.println("\nINCORRECT! The answer was not found in the database.\n");
                     }
                    // connect().close();
                 } catch (SQLException e) {
@@ -229,7 +230,7 @@ public class QuestionGenerator {
     public static void main(String[] args) {
             // Connection conn = connect();
             QuestionGenerator game = new QuestionGenerator();
-            System.out.println("\n...LEXICRUSH...\nLocal Database Trivia Game Demo\n");
+            System.out.println("\n...LEXICRUSH...\nLocal Game Demo\n");
 
             game.getRandomNbTable();
             // System.out.println(game.chosenTable);
