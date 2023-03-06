@@ -242,35 +242,34 @@ public class QuestionGenerator {
         }
     }
 
-
     public static void main(String[] args) {
-            // Connection conn = connect();
-            QuestionGenerator game = new QuestionGenerator();
-            System.out.println("\n...LEXICRUSH...\nLocal Game Demo\n");
+        // Connection conn = connect();
+        QuestionGenerator game = new QuestionGenerator();
+        System.out.println("\n...LEXICRUSH...\nLocal Game Demo\n");
 
-            game.getRandomNbTable();
-            // System.out.println(game.chosenTable);
+        game.getRandomNbTable();
+        // System.out.println(game.chosenTable);
 
-            game.getReadableNounFromTableName();
+        game.getReadableNounFromTableName();
 
-            game.getFilter();
+        game.getFilter();
 
-            if (game.chosenFilter == ("Any")) {
-                assembledPrompt = "Name " + game.chosenNoun + ": ";
-            } 
-            if (game.chosenFilter == ("Begins With The Letter")) {
-                assembledPrompt = "Name " + game.chosenNoun + " that starts with " + game.randomLetter + ": ";
-            } 
-            if (game.chosenFilter == ("Ends With The Letter")) {
-                assembledPrompt = "Name " + game.chosenNoun + " that ends with " + game.randomLetter + ": ";
-            } 
+        if (game.chosenFilter == ("Any")) {
+            assembledPrompt = "Name " + game.chosenNoun + ": ";
+        } 
+        if (game.chosenFilter == ("Begins With The Letter")) {
+            assembledPrompt = "Name " + game.chosenNoun + " that starts with " + game.randomLetter + ": ";
+        } 
+        if (game.chosenFilter == ("Ends With The Letter")) {
+            assembledPrompt = "Name " + game.chosenNoun + " that ends with " + game.randomLetter + ": ";
+        } 
 
-            try (Scanner scanner = new Scanner(System.in)) {
-                System.out.print(assembledPrompt);
-                String potentialAnswer = scanner.nextLine(); // stores answer from CL
-                
-                game.checkAnswer(potentialAnswer);
-            }
+        try (Scanner scanner = new Scanner(System.in)) {
+            System.out.print(assembledPrompt);
+            String potentialAnswer = scanner.nextLine(); // stores answer from CL
+            
+            game.checkAnswer(potentialAnswer);
+        }
     }
 }
 
