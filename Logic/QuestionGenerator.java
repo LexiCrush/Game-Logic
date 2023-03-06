@@ -82,7 +82,7 @@ public class QuestionGenerator {
         if (chosenFilter.equals("Any")) {
             try {
                 Statement stmt = connect().createStatement(); 
-                ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE " + chosenTable + " = '" + potentialAnswer + "'");
+                ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "')");
                 if (rs.next()) { // checks each row
                     System.out.println("Correct!");
                 } else {
