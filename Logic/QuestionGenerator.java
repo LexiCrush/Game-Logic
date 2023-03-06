@@ -12,12 +12,14 @@ import java.util.ArrayList;
 public class QuestionGenerator {
 
     private String[] questionFilters = {"Begins With The Letter", "Ends With The Letter", "Any"};
-
+    private String[] questionModes = {"Longest Word Mode", "Shortest Word Mode"};
     public Connection conn = connect();
     public String chosenTable;
     public String chosenNoun;
     public String chosenFilter;
+    public static String chosenMode;
     public static String assembledPrompt;
+    public int pointsRewarded;
 
     private ArrayList<String> firstLetters;
     private ArrayList<String> lastLetters;
@@ -171,6 +173,24 @@ public class QuestionGenerator {
         }
     }
 
+    public void getMode() {
+        // choose either "Longest Word Mode" or 'Shortest Word Mode'
+        Random rand = new Random();
+        chosenMode = questionModes[rand.nextInt(questionModes.length)];
+        // chosenMode = "Longest Word Mode";
+    }
+
+        if (chosenFilter == ("Any")) {
+            assembledPrompt = "Name " + chosenNoun + ": ";
+        } 
+        if (chosenFilter == ("Begins With The Letter")) {
+            assembledPrompt = "Name " + chosenNoun + " that starts with " + randomLetter + ": ";
+        } 
+        if (chosenFilter == ("Ends With The Letter")) {
+            assembledPrompt = "Name " + chosenNoun + " that ends with " + randomLetter + ": ";
+        } 
+    }
+
     public void checkAnswer(String potentialAnswer) {
         
         if (chosenFilter.equals("Any")) {
@@ -192,7 +212,7 @@ public class QuestionGenerator {
                 // ResultSet rs11 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('An " + potentialAnswer + "')");
 
                 if (rs.next()) { 
-                    System.out.println("\nCORRECT! " + potentialAnswer+ " is " + chosenNoun.toLowerCase() + " in our database.\n");
+                    System.out.println("\nCORRECT! " + potentialAnswer + " is " + chosenNoun.toLowerCase() + " in our database.\n");
                 } else {
                     System.out.println("\nINCORRECT. The answer was not found in the database.\n");
                 }
@@ -227,7 +247,7 @@ public class QuestionGenerator {
                     ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "')");
                     // ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('%" + potentialAnswer + "%')");
                     if (rs.next()) { // checks each row
-                        System.out.println("\nCORRECT! " + potentialAnswer+ " is " + chosenNoun.toLowerCase() + " in our database.\n");
+                        System.out.println("\nCORRECT! " + potentialAnswer + " is " + chosenNoun.toLowerCase() + " in our database.\n");
                     } else {
                         System.out.println("\nINCORRECT! The answer was not found in the database.\n");
                     }
@@ -239,18 +259,11 @@ public class QuestionGenerator {
                 System.out.println("That does not end with the letter " + randomLetter);
             }
         }
-    }
-
-    public void promptAssembler() {
-        if (chosenFilter == ("Any")) {
-            assembledPrompt = "Name " + chosenNoun + ": ";
-        } 
-        if (chosenFilter == ("Begins With The Letter")) {
-            assembledPrompt = "Name " + chosenNoun + " that starts with " + randomLetter + ": ";
-        } 
-        if (chosenFilter == ("Ends With The Letter")) {
-            assembledPrompt = "Name " + chosenNoun + " that ends with " + randomLetter + ": ";
-        } 
+        
+        if (chosenMode == "Longest Word Mode") {
+            pointsRewarded = potentialAnswer.length();
+            System.out.println("You earned " + pointsRewarded + " points!");
+        }
     }
 
     public static void main(String[] args) {
@@ -265,14 +278,17 @@ public class QuestionGenerator {
 
         game.getFilter();
 
+        game.getMode();
+        System.out.println("Chosen Mode: " + chosenMode + "\n");
+
         game.promptAssembler();
 
         try (Scanner scanner = new Scanner(System.in)) {
             System.out.print(assembledPrompt);
             String potentialAnswer = scanner.nextLine(); // stores answer from CL
-            
             game.checkAnswer(potentialAnswer);
         }
+
     }
 }
 

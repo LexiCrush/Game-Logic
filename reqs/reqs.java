@@ -25,6 +25,7 @@ public class reqs {
             qg.getReadableNounFromTableName();
             qg.getFilter();
             qg.promptAssembler();
+            
             String response = QuestionGenerator.assembledPrompt;
             t.getResponseHeaders().set("Content-Type", "text/plain");
             t.sendResponseHeaders(200, response.length());
@@ -33,5 +34,6 @@ public class reqs {
             os.close();
         }
     }
+    
 
 }
