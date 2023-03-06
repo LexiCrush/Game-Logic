@@ -2,6 +2,7 @@ package Logic;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
@@ -75,7 +76,7 @@ public class QuestionGenerator {
             }
         }
     }
-    public void checkAnswer(String potentialAnswer) {
+    /*public void checkAnswer(String potentialAnswer) {
         if (chosenFilter.equals("Any")) {
             try {
                 Statement stmt = connect().createStatement(); 
@@ -91,7 +92,28 @@ public class QuestionGenerator {
             }
         }
 
-    }
+    }*/
+    public void checkAnswer(String potentialAnswer) {
+        if (chosenFilter.equals("Any")) {
+            try {
+                Connection conn = connect();
+                //List<String> columnNames = getColumnNames(chosenTable);
+                //String secondColumnName = columnNames.get(1);
+                //System.out.println("SELECT * FROM " + chosenTable + " WHERE " + secondColumnName + " = " + potentialAnswer);
+                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM " + chosenTable + " WHERE " + chosenTable + " = ?");
+                pstmt.setString(1, potentialAnswer);
+                ResultSet rs = pstmt.executeQuery();
+                if (rs.next()) {
+                    System.out.println("Correct!");
+                } else {
+                    System.out.println("Incorrect. The answer was not found in the database.");
+                }
+                conn.close();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }    
     
     public static void main(String[] args) { 
         Connection conn = connect(); // connect to the database
