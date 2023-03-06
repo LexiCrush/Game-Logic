@@ -26,6 +26,7 @@ public class QuestionGenerator {
     private static String chosenTable;
     private ArrayList<String> firstLetters;
     private ArrayList<String> lastLetters;
+    private String randomLetter;
 
     public void getQuestion() {
         Random rand = new Random();
@@ -48,7 +49,7 @@ public class QuestionGenerator {
                 connect().close();
                 // choose a random letter from the list of first letters
                 int randomIndex = rand.nextInt(firstLetters.size());
-                String randomLetter = firstLetters.get(randomIndex);
+                randomLetter = firstLetters.get(randomIndex);
                 System.out.println(randomLetter);
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
@@ -66,7 +67,7 @@ public class QuestionGenerator {
                 connect().close();
                 // choose a random letter from the list of first letters
                 int randomIndex = rand.nextInt(lastLetters.size());
-                String randomLetter = lastLetters.get(randomIndex);
+                randomLetter = lastLetters.get(randomIndex);
                 System.out.println(randomLetter);
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
@@ -150,9 +151,16 @@ public class QuestionGenerator {
             QuestionGenerator game = new QuestionGenerator();
             game.getQuestion();
             String chosenFilter = game.chosenFilter;
+            String randomLetter = game.randomLetter;
+
             if (chosenFilter.equals("Any")) {
                 System.out.println("Name " + NOUN);
             }
+            if (chosenFilter.equals("Begins With The Letter") || chosenFilter.equals("Ends With The Letter")) {
+                System.out.println("Name " + NOUN + " that " + chosenFilter + " " + randomLetter + ".");
+            }
+
+
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
