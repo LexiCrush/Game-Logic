@@ -179,21 +179,20 @@ public class QuestionGenerator {
             try {
                 Statement stmt = conn.createStatement(); 
                 ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "')");
-                // include varittions of the answer in the database, for ex if it ends with an s or not it shoud still be correct
-                ResultSet rs2 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "s')");
-                ResultSet rs3 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "es')");
-                ResultSet rs4 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "ies')");
-                ResultSet rs5 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "Day')");
-                // a variation that starts with "the" or "a" should also be correct
-                ResultSet rs6 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('the " + potentialAnswer + "')");
-                ResultSet rs7 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('The " + potentialAnswer + "')");
-                ResultSet rs8 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('a " + potentialAnswer + "')");
-                ResultSet rs9 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('A " + potentialAnswer + "')");
-                ResultSet rs10 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('an " + potentialAnswer + "')");
-                ResultSet rs11 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('An " + potentialAnswer + "')");
+                // // include varittions of the answer in the database, for ex if it ends with an s or not it shoud still be correct
+                // ResultSet rs2 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "s')");
+                // ResultSet rs3 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "es')");
+                // ResultSet rs4 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "ies')");
+                // ResultSet rs5 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "Day')");
+                // // a variation that starts with "the" or "a" should also be correct
+                // ResultSet rs6 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('the " + potentialAnswer + "')");
+                // ResultSet rs7 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('The " + potentialAnswer + "')");
+                // ResultSet rs8 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('a " + potentialAnswer + "')");
+                // ResultSet rs9 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('A " + potentialAnswer + "')");
+                // ResultSet rs10 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('an " + potentialAnswer + "')");
+                // ResultSet rs11 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('An " + potentialAnswer + "')");
 
-                
-                if (rs.next() || rs2.next() || rs3.next() || rs4.next() || rs5.next() || rs6.next() || rs7.next() || rs8.next() || rs9.next() || rs10.next() || rs11.next()) { 
+                if (rs.next()) { 
                     System.out.println("\nCORRECT! " + potentialAnswer+ " is " + chosenNoun.toLowerCase() + " in our database.\n");
                 } else {
                     System.out.println("\nINCORRECT. The answer was not found in the database.\n");
@@ -272,33 +271,6 @@ public class QuestionGenerator {
                 
                 game.checkAnswer(potentialAnswer);
             }
-            
-
-            // getReadableNounFromTableName(conn, chosenTable);
-
-
-            // String NOUN = getReadableNounFromTableName(conn, chosenTable);
-
-            // QuestionGenerator game = new QuestionGenerator();
-            // game.getQuestion(conn);
-            // String chosenFilter = game.chosenFilter; 
-
-            // String randomLetter = game.randomLetter;
-
-            // if (chosenFilter.equals("Any")) {
-            //     System.out.println("Name " + NOUN);
-            // }
-            // if (chosenFilter.equals("Begins With The Letter") || chosenFilter.equals("Ends With The Letter")) {
-            //     System.out.println("Name " + NOUN + " that " + chosenFilter + " " + randomLetter.toUpperCase() + ".");
-            // }
-
-            // Scanner scanner = new Scanner(System.in);
-            // System.out.print("Enter your answer: ");
-            // String potentialAnswer = scanner.nextLine(); // stores answer from CL into potentialAnswer
-
-            // System.out.println("Your answer: " + potentialAnswer);
-
-            // game.checkAnswer(potentialAnswer, conn);
     }
 }
 
