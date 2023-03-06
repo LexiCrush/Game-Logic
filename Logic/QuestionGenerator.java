@@ -65,9 +65,11 @@ public class QuestionGenerator {
 
     public void getReadableNounFromTableName() {
         String table = chosenTable; // sets table to the randomly chosen table
-        String NOUN = ""; // sets NOUN attribute to specific string based off of the randomly chosen table
+        String NOUN = "A Noun"; // sets NOUN attribute to specific string based off of the randomly chosen table
             if (table.equals("all_usa_states")) {
                 NOUN = "A State in the USA";
+            } else if (table.equals("many_english_words")) {
+                NOUN = "A Word in the English Language";
             } else if (table.equals("all_world_countries")) {
                 NOUN = "A Country in the World";
             } else if (table.equals("all_elements")) {
@@ -140,6 +142,7 @@ public class QuestionGenerator {
                     String letter = rs.getString(1);
                     firstLetters.add(letter);
                 }
+                
                 // conn.close();
                 // choose a random letter from the list of first letters
                 int randomIndex = rand.nextInt(firstLetters.size());
@@ -176,42 +179,59 @@ public class QuestionGenerator {
             try {
                 Statement stmt = conn.createStatement(); 
                 ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "')");
-                if (rs.next()) { // checks each row
-                    System.out.println("\nCorrect! " + potentialAnswer+ " is " + chosenNoun.toLowerCase() + " in our database.\n");
+                // include varittions of the answer in the database, for ex if it ends with an s or not it shoud still be correct
+                ResultSet rs2 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "s')");
+                ResultSet rs3 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "es')");
+                ResultSet rs4 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "ies')");
+                ResultSet rs5 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "Day')");
+                // a variation that starts with "the" or "a" should also be correct
+                ResultSet rs6 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('the " + potentialAnswer + "')");
+                ResultSet rs7 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('The " + potentialAnswer + "')");
+                ResultSet rs8 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('a " + potentialAnswer + "')");
+                ResultSet rs9 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('A " + potentialAnswer + "')");
+                ResultSet rs10 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('an " + potentialAnswer + "')");
+                ResultSet rs11 = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('An " + potentialAnswer + "')");
+
+                
+                if (rs.next() || rs2.next() || rs3.next() || rs4.next() || rs5.next() || rs6.next() || rs7.next() || rs8.next() || rs9.next() || rs10.next() || rs11.next()) { 
+                    System.out.println("\nCORRECT! " + potentialAnswer+ " is " + chosenNoun.toLowerCase() + " in our database.\n");
                 } else {
-                    System.out.println("\nIncorrect. The answer was not found in the database.\n");
+                    System.out.println("\nINCORRECT. The answer was not found in the database.\n");
                 }
+
                 // conn.close();
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
         }
         if (chosenFilter.equals("Begins With The Letter")) {
-            if (Character.toString(potentialAnswer.charAt(0)).equals(Character.toString(this.randomLetter.charAt(0)))) {    
+            if (Character.toString(potentialAnswer.charAt(0)).equalsIgnoreCase(Character.toString(this.randomLetter.charAt(0)))) {  
                 try {
                     Statement stmt = conn.createStatement(); 
                     ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "')");
                     if (rs.next()) { // checks each row
-                        System.out.println("Correct!");
+                        System.out.println("\nCORRECT! " + potentialAnswer+ " is " + chosenNoun.toLowerCase() + " in our database.\n");
                     } else {
-                        System.out.println("Incorrect. The answer was not found in the database.");
+                        System.out.println("\nINCORRECT! The answer was not found in the database.\n");
                     }
                     // connect().close();
                 } catch (SQLException e) {
                     System.out.println(e.getMessage());
                 }
             } else {
-                System.out.println("That does not begin with the letter " + randomLetter);
+                System.out.println("\nINCORRECT! That does not begin with the letter " + randomLetter + ".\n");
             }
         }
         if (chosenFilter.equals("Ends With The Letter")) {
-            if (potentialAnswer.charAt(potentialAnswer.length() - 1) == this.randomLetter.charAt(this.randomLetter.length() - 1)) {                try {
+            if (Character.toString(potentialAnswer.charAt(potentialAnswer.length() - 1)).equalsIgnoreCase(Character.toString(this.randomLetter.charAt(this.randomLetter.length() - 1)))) {             
+                try {
                     Statement stmt = conn.createStatement(); 
                     ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "')");
+                    // ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('%" + potentialAnswer + "%')");
                     if (rs.next()) { // checks each row
-                        System.out.println("Correct!");
+                        System.out.println("\nCORRECT! " + potentialAnswer+ " is " + chosenNoun.toLowerCase() + " in our database.\n");
                     } else {
-                        System.out.println("Incorrect. The answer was not found in the database.");
+                        System.out.println("\nINCORRECT! The answer was not found in the database.\n");
                     }
                    // connect().close();
                 } catch (SQLException e) {
@@ -227,7 +247,7 @@ public class QuestionGenerator {
     public static void main(String[] args) {
             // Connection conn = connect();
             QuestionGenerator game = new QuestionGenerator();
-            System.out.println("\n...LEXICRUSH...\nLocal Database Trivia Game Demo\n");
+            System.out.println("\n...LEXICRUSH...\nLocal Game Demo\n");
 
             game.getRandomNbTable();
             // System.out.println(game.chosenTable);
