@@ -31,7 +31,10 @@ public class QuestionGenerator {
 
     public void getQuestion() {
         Random rand = new Random();
-        chosenFilter = questionFilters[rand.nextInt(questionFilters.length)];
+
+        // chosenFilter = questionFilters[rand.nextInt(questionFilters.length)];
+        chosenFilter = "Any";
+
         System.out.println("Chosen Filter: " + chosenFilter);
         // make a list of all the first letters of the nouns in the chosen table
         if (chosenFilter.equals("Any")) {
@@ -79,7 +82,7 @@ public class QuestionGenerator {
         if (chosenFilter.equals("Any")) {
             try {
                 Statement stmt = connect().createStatement(); 
-                ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE " + chosenTable + " = ?"); // searches for when word from chosentable is = to potential answer
+                ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE " + chosenTable + " = '" + potentialAnswer + "'");
                 if (rs.next()) { // checks each row
                     System.out.println("Correct!");
                 } else {
@@ -170,6 +173,7 @@ public class QuestionGenerator {
             QuestionGenerator game = new QuestionGenerator();
             game.getQuestion();
             String chosenFilter = game.chosenFilter; 
+
             String randomLetter = game.randomLetter;
 
             if (chosenFilter.equals("Any")) {
@@ -182,7 +186,9 @@ public class QuestionGenerator {
             Scanner scanner = new Scanner(System.in);
             System.out.print("Enter your answer: ");
             String potentialAnswer = scanner.nextLine(); // stores answer from CL into potentialAnswer
-    
+
+            System.out.println("Your answer: " + potentialAnswer);
+
             game.checkAnswer(potentialAnswer);
                     
         } catch (SQLException e) {
