@@ -157,10 +157,8 @@ public class QuestionGenerator {
                 System.out.println("Name " + NOUN);
             }
             if (chosenFilter.equals("Begins With The Letter") || chosenFilter.equals("Ends With The Letter")) {
-                System.out.println("Name " + NOUN + " that " + chosenFilter + " " + randomLetter + ".");
+                System.out.println("Name " + NOUN + " that " + chosenFilter + " " + randomLetter.toUpperCase() + ".");
             }
-
-
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
