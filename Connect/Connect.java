@@ -21,13 +21,14 @@ public class Connect {
             System.out.println(e.getMessage());  
         } 
         return conn;  
-    }  
+    } 
+    // method to insert username and password into database
     public static String insert(String userValue, String passValue) throws ClassNotFoundException{
         String sql = "INSERT INTO users(username, user_password) VALUES(?,?)";
         String path = "db/UserProfile.db";
         Connection conn = connect(path);
-        String success;
-        String msg;
+        String success; // to check if insert was successful
+        String msg; // to store error message
         if(userValue.equals("") || passValue.equals("")){
             success = "false";
             return success;
