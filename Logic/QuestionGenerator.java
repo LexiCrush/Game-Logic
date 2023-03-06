@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.Random;
 import java.util.ArrayList;
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 import java.util.Scanner;
 
 =======
@@ -15,6 +16,11 @@ import java.util.List;
 import java.util.Scanner;
 >>>>>>> Stashed changes
 
+=======
+import java.util.List;
+import java.util.Scanner;
+
+>>>>>>> Stashed changes
 public class QuestionGenerator {
     public static Connection connect() {
         Connection conn = null;
@@ -82,6 +88,7 @@ public class QuestionGenerator {
         }
     }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     public void checkAnswer(String potentialAnswer) {
         if (chosenFilter.equals("Any")) {
             try {
@@ -95,15 +102,27 @@ public class QuestionGenerator {
                 ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE " + chosenTable + " = " + potentialAnswer); // searches for when word from chosentable is = to potential answer
 >>>>>>> Stashed changes
                 if (rs.next()) { // checks each row
+=======
+   
+    public void checkAnswer(String potentialAnswer) {
+        if (chosenFilter.equals("Any")) {
+            try {
+                Connection conn = connect();
+                PreparedStatement pstmt = conn.prepareStatement("SELECT * FROM " + chosenTable + " WHERE " + chosenTable + " = ?");
+                pstmt.setString(1, potentialAnswer);
+                ResultSet rs = pstmt.executeQuery();
+                if (rs.next()) {
+>>>>>>> Stashed changes
                     System.out.println("Correct!");
                 } else {
                     System.out.println("Incorrect. The answer was not found in the database.");
                 }
-                connect().close();
+                conn.close();
             } catch (SQLException e) {
                 System.out.println(e.getMessage());
             }
         }
+<<<<<<< Updated upstream
 
 <<<<<<< Updated upstream
     }
@@ -143,6 +162,10 @@ public class QuestionGenerator {
                 System.out.println(e.getMessage());
             }
         }
+    }    
+    
+>>>>>>> Stashed changes
+=======
     }    
     
 >>>>>>> Stashed changes
@@ -237,7 +260,10 @@ public class QuestionGenerator {
             System.out.print("Enter your answer: ");
             String potentialAnswer = scanner.nextLine(); // stores answer from CL into potentialAnswer
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
     
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
             game.checkAnswer(potentialAnswer);
@@ -254,7 +280,11 @@ public class QuestionGenerator {
         }
     }
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 }
+=======
+}
+>>>>>>> Stashed changes
 =======
 }
 >>>>>>> Stashed changes
