@@ -158,7 +158,7 @@ public class QuestionGenerator {
                     String letter = rs.getString(1);
                     lastLetters.add(letter);
                 }
-                conn.close();
+                // conn.close();
                 // choose a random letter from the list of first letters
                 int randomIndex = rand.nextInt(lastLetters.size());
                 randomLetter = lastLetters.get(randomIndex);
