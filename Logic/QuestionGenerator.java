@@ -214,6 +214,8 @@ public class QuestionGenerator {
 
                 if (rs.next()) { 
                     System.out.println("\nCORRECT! " + potentialAnswer + " is " + chosenNoun.toLowerCase() + " in our database.\n");
+                    pointsRewarded = potentialAnswer.length();
+                    System.out.println("You earned " + pointsRewarded + " points!");
                 } else {
                     System.out.println("\nINCORRECT. The answer was not found in the database.\n");
                 }
@@ -230,6 +232,8 @@ public class QuestionGenerator {
                     ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('" + potentialAnswer + "')");
                     if (rs.next()) { // checks each row
                         System.out.println("\nCORRECT! " + potentialAnswer+ " is " + chosenNoun.toLowerCase() + " in our database.\n");
+                        pointsRewarded = potentialAnswer.length();
+                        System.out.println("You earned " + pointsRewarded + " points!");
                     } else {
                         System.out.println("\nINCORRECT! The answer was not found in the database.\n");
                     }
@@ -249,6 +253,8 @@ public class QuestionGenerator {
                     // ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE LOWER(" + chosenTable + ") = LOWER('%" + potentialAnswer + "%')");
                     if (rs.next()) { // checks each row
                         System.out.println("\nCORRECT! " + potentialAnswer + " is " + chosenNoun.toLowerCase() + " in our database.\n");
+                        pointsRewarded = potentialAnswer.length();
+                        System.out.println("You earned " + pointsRewarded + " points!");
                     } else {
                         System.out.println("\nINCORRECT! The answer was not found in the database.\n");
                     }
@@ -261,24 +267,15 @@ public class QuestionGenerator {
             }
         }
         
-        if (chosenMode == "Longest Word Mode") {
-            pointsRewarded = potentialAnswer.length();
-            System.out.println("You earned " + pointsRewarded + " points!");
-        }
+        
     }
-
-    public static void main(String[] args) {
-        // Connection conn = connect();
+    
+    public static void assembleGame() {
         QuestionGenerator game = new QuestionGenerator();
         System.out.println("\n...LEXICRUSH...\nLocal Game Demo\n");
-
         game.getRandomNbTable();
-        // System.out.println(game.chosenTable);
-
         game.getReadableNounFromTableName();
-
         game.getFilter();
-
         game.getMode();
         System.out.println("Chosen Mode: " + chosenMode + "\n");
 
@@ -289,6 +286,31 @@ public class QuestionGenerator {
             String potentialAnswer = scanner.nextLine(); // stores answer from CL
             game.checkAnswer(potentialAnswer);
         }
+    }
+
+    public static void main(String[] args) {
+        // Connection conn = connect();
+        // QuestionGenerator game = new QuestionGenerator();
+        // System.out.println("\n...LEXICRUSH...\nLocal Game Demo\n");
+
+        // game.getRandomNbTable();
+        // // System.out.println(game.chosenTable);
+
+        // game.getReadableNounFromTableName();
+
+        // game.getFilter();
+
+        // game.getMode();
+        // System.out.println("Chosen Mode: " + chosenMode + "\n");
+
+        // game.promptAssembler();
+
+        // try (Scanner scanner = new Scanner(System.in)) {
+        //     System.out.print(assembledPrompt);
+        //     String potentialAnswer = scanner.nextLine(); // stores answer from CL
+        //     game.checkAnswer(potentialAnswer);
+        // }
+        assembleGame();
 
     }
 }
