@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Random;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 
 public class QuestionGenerator {
@@ -74,6 +75,24 @@ public class QuestionGenerator {
             }
         }
     }
+    public void checkAnswer(String potentialAnswer) {
+        if (chosenFilter.equals("Any")) {
+            try {
+                Statement stmt = connect().createStatement(); 
+                ResultSet rs = stmt.executeQuery("SELECT * FROM " + chosenTable + " WHERE " + chosenTable + " LIKE '%' " + potentialAnswer + " '%'"); // searches for when word from chosentable is = to potential answer
+                if (rs.next()) { // checks each row
+                    System.out.println("Correct!");
+                } else {
+                    System.out.println("Incorrect. The answer was not found in the database.");
+                }
+                connect().close();
+            } catch (SQLException e) {
+                System.out.println(e.getMessage());
+            }
+        }
+
+    }
+    
     public static void main(String[] args) { 
         Connection conn = connect(); // connect to the database
         // select all available tables in NounBankSQlite.db
@@ -150,7 +169,7 @@ public class QuestionGenerator {
             chosenTable = tables[random];
             QuestionGenerator game = new QuestionGenerator();
             game.getQuestion();
-            String chosenFilter = game.chosenFilter;
+            String chosenFilter = game.chosenFilter; 
             String randomLetter = game.randomLetter;
 
             if (chosenFilter.equals("Any")) {
@@ -159,6 +178,13 @@ public class QuestionGenerator {
             if (chosenFilter.equals("Begins With The Letter") || chosenFilter.equals("Ends With The Letter")) {
                 System.out.println("Name " + NOUN + " that " + chosenFilter + " " + randomLetter.toUpperCase() + ".");
             }
+
+            Scanner scanner = new Scanner(System.in);
+            System.out.print("Enter your answer: ");
+            String potentialAnswer = scanner.nextLine(); // stores answer from CL into potentialAnswer
+    
+            game.checkAnswer(potentialAnswer);
+                    
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
@@ -170,5 +196,4 @@ public class QuestionGenerator {
             System.out.println(ex.getMessage());
         }
     }
-
 }
