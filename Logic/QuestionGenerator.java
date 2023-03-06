@@ -33,8 +33,9 @@ public class QuestionGenerator {
         System.out.println("Chosen Filter: " + chosenFilter);
         // make a list of all the first letters of the nouns in the chosen table
         if (chosenFilter.equals("Any")) {
-            // do nothing for now
+            // pass
         }
+
         if (chosenFilter.equals("Begins With The Letter")) {
             try {
                 Statement stmt = connect().createStatement();
@@ -148,7 +149,10 @@ public class QuestionGenerator {
             chosenTable = tables[random];
             QuestionGenerator game = new QuestionGenerator();
             game.getQuestion();
-
+            String chosenFilter = game.chosenFilter;
+            if (chosenFilter.equals("Any")) {
+                System.out.println("Name " + NOUN);
+            }
         } catch (SQLException e) {
             System.out.println(e.getMessage());
         }
