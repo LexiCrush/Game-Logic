@@ -180,6 +180,7 @@ public class QuestionGenerator {
         // chosenMode = "Longest Word Mode";
     }
 
+    public void promptAssembler() {
         if (chosenFilter == ("Any")) {
             assembledPrompt = "Name " + chosenNoun + ": ";
         } 
