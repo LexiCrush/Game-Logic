@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.util.Random;
 import java.util.Scanner;
 import java.util.ArrayList;
-// import java.util.Scanner;
 
 
 public class QuestionGenerator {
@@ -242,6 +241,18 @@ public class QuestionGenerator {
         }
     }
 
+    public void promptAssembler() {
+        if (chosenFilter == ("Any")) {
+            assembledPrompt = "Name " + chosenNoun + ": ";
+        } 
+        if (chosenFilter == ("Begins With The Letter")) {
+            assembledPrompt = "Name " + chosenNoun + " that starts with " + randomLetter + ": ";
+        } 
+        if (chosenFilter == ("Ends With The Letter")) {
+            assembledPrompt = "Name " + chosenNoun + " that ends with " + randomLetter + ": ";
+        } 
+    }
+
     public static void main(String[] args) {
         // Connection conn = connect();
         QuestionGenerator game = new QuestionGenerator();
@@ -254,15 +265,7 @@ public class QuestionGenerator {
 
         game.getFilter();
 
-        if (game.chosenFilter == ("Any")) {
-            assembledPrompt = "Name " + game.chosenNoun + ": ";
-        } 
-        if (game.chosenFilter == ("Begins With The Letter")) {
-            assembledPrompt = "Name " + game.chosenNoun + " that starts with " + game.randomLetter + ": ";
-        } 
-        if (game.chosenFilter == ("Ends With The Letter")) {
-            assembledPrompt = "Name " + game.chosenNoun + " that ends with " + game.randomLetter + ": ";
-        } 
+        game.promptAssembler();
 
         try (Scanner scanner = new Scanner(System.in)) {
             System.out.print(assembledPrompt);
